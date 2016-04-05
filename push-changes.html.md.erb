@@ -1,0 +1,55 @@
+---
+title: Push Local Changes
+owner: Ivan Baldinotti
+---
+
+<strong><%= modified_date %></strong>
+
+In this step you’ll learn how to propagate a local change to the application through to <%= vars.product_short %>. As a simple change, we'll modify the title which the app shows.
+
+Change the `body` property in the `src/cf_sample_app_clojure/core.clj` file to 'I am awesome!'. Your final result should look something like this:
+
+```clojure
+(ns cf-sample-app-clojure.core
+   (:gen-class)
+   (:require [compojure.core :refer :all]
+             [compojure.route :as route]
+             [ring.adapter.jetty :as jetty]
+             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]))
+
+(defroutes app-routes
+  (GET "/" [] "I am awesome!")
+  (route/resources "/")
+  (route/not-found "Not Found"))
+
+(def app
+  (wrap-defaults app-routes site-defaults))
+
+(defn -main
+  [& [port]]
+  (let [port (Integer. (or port (System/getenv "PORT") 3000))]
+    (jetty/run-jetty #'app {:port  port
+                            :join? false})))
+
+```
+
+Now test locally:
+
+<pre class="terminal">
+$ lein uberjar
+$ java -jar target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
+</pre>
+
+Visiting your application at [http://localhost:3000](http://localhost:3000), you should see the message changed. **You are awesome!**
+
+Now deploy. All you need to do is `cf push` again:
+
+<pre class="terminal">
+$ cf push cf-sample-app-clojure -b java_buildpack -p target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
+</pre>
+
+Finally, check that everything is working by visiting your app's URL from your web browser.
+
+<div style="text-align:center;margin:3em;">
+  <a href="./environment.html" class="btn btn-primary">I can push local changes</a>
+</div>

@@ -1,0 +1,21 @@
+---
+title: Run the App Locally
+owner: Ivan Baldinotti
+---
+
+<strong><%= modified_date %></strong>
+
+First of all compile your application using the [leiningen](http://leiningen.org/) command `lein uberjar`. This will build a standalone executable as jar file.
+Now start your application locally using the `java -jar target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar` command:
+
+<pre class="terminal">
+$ java -jar target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
+</pre>
+
+Open [http://localhost:3000](http://localhost:3000) with your web browser. You should see your app running locally.
+
+To stop the app from running locally, in the CLI, press `Ctrl+C` to exit.
+
+<div style="text-align:center;margin:3em;">
+  <a href="./push-changes.html" class="btn btn-primary">I can run my App locally</a>
+</div>
