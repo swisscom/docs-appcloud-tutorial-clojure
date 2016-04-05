@@ -7,20 +7,22 @@ owner: Ivan Baldinotti
 
 In this step you will deploy the app to <%= vars.product_full %>.
 
-Push your app to the cloud by executing the following command and replacing the "my-random-hostname" with your own hostname. This will be part of the URL your app will be reached from and it has to be globally unique so be creative. The `-b java_buildpack` tells Cloud Foundry to use the java buildpack for our app and the `-p target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar` tells Cloud Foundry where to get the repository of our application to push to the Cloud.
+Push your app to the cloud by executing the following command and replacing the "my-random-hostname" with your own hostname. This will be part of the URL your app will be reached from and it has to be globally unique so be creative. 
+
+The `-b java_buildpack` tells Cloud Foundry to use the java buildpack for our app and the `-p target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar` tells Cloud Foundry where to get the repository of our application to push to the Cloud.
 <pre class="terminal">
-$ cf push cf-sample-app-clojure -b java_buildpack -p target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
-Creating app cf-sample-app-clojure in org MyOrg / space MySpace as user@mydomain.com...
+$ cf push my-clojure-app -b java_buildpack -p target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
+Creating app my-clojure-app in org MyOrg / space MySpace as user@mydomain.com...
 OK
 
 Creating route my-random-hostname.scapp.io...
 OK
 
-Binding my-random-hostname.scapp.io to cf-sample-app-clojure...
+Binding my-random-hostname.scapp.io to my-clojure-app...
 OK
 
-Uploading cf-sample-app-clojure...
-Uploading app files from: /.../cf-sample-app-node
+Uploading my-clojure-app...
+Uploading app files from: /.../my-clojure-app
 Uploading 6.1K, 17 files
 Done uploading
 OK
@@ -39,8 +41,8 @@ buildpack: java_buildpack
 The application is now deployed. Ensure that the app is running:
 
 <pre class="terminal">
-$ cf app cf-sample-app-clojure
-Showing health and status for app cf-sample-app-clojure in org MyOrg / space MySpace as user@mydomain.com...
+$ cf app my-clojure-app
+Showing health and status for app my-clojure-app in org MyOrg / space MySpace as user@mydomain.com...
 OK
 
 requested state: started
