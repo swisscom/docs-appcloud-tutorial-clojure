@@ -5,7 +5,7 @@ owner: Ivan Baldinotti
 
 <strong><%= modified_date %></strong>
 
-<%= vars.product_short %> recognizes an Clojure app as as a Java app by the use of the java buildpack during the push and the use of a jar file as application package. Automatically the Java Buildpack will run this application using the `main()` method present on the `core.clj` file. 
+<%= vars.product_short %> recognizes a Clojure app as as a Java app by the use of the java buildpack during the push and the use of a jar file as application package. Automatically the Java Buildpack will run this application using the `main()` method present on the `core.clj` file. 
 
 The dependencies needed for the application are stored on the `project.clj` file and are included in the standalone jar during the compilaton phase. When you create a new project with <a href="http://leiningen.org/" target="_blank">Leiningen</a>, the file `project.clj` is created automatically. To add new dependencies to the project, simply modifiy the file accordingly.
 The demo app you deployed already has a `project.clj`, and it looks something like this:
@@ -29,6 +29,12 @@ The demo app you deployed already has a `project.clj`, and it looks something li
 ```
 
 The `project.clj` file determines both the version of Clojure that will be used to run your application on <%= vars.product_short %>, as well as the dependencies that should be installed with your application. 
+
+To install the dependencies compile the project with:
+
+<pre class="terminal">
+$ lein uberjar
+</pre> 
 
 <div style="text-align:center;margin:3em;">
   <a href="./run-locally.html" class="btn btn-primary">I've installed the App dependencies locally</a>
