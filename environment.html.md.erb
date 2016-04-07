@@ -7,10 +7,10 @@ owner: Ivan Baldinotti
 
 <%= vars.product_short %> lets you externalize configuration - storing data such as encryption keys or external resource addresses in <a href="../devguide/deploy-apps/environment-variable.html" target="_blank">environment variables</a>.
 
-At runtime, environment variables are exposed to the application through its environment. You can use these for example to change the default version of Java to 7. Before doing this the application needs to be pushed with a different version of buildpack that contains the jre version we want to use.
+At runtime, environment variables are exposed to the application through its environment. You can use these for example to change the default version of Java to 7. Before doing this, the application needs to be pushed with a different version of the buildpack that contains the JRE version we want to use.
 
 <pre class="terminal">
-cf push cf-sample-app-clojure -b https://github.com/cloudfoundry/java-buildpack.git -p target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
+cf push my-clojure-app -b https://github.com/cloudfoundry/java-buildpack.git -p target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
 </pre>
 
 <pre class="terminal">

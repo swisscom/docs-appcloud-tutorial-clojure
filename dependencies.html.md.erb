@@ -5,10 +5,9 @@ owner: Ivan Baldinotti
 
 <strong><%= modified_date %></strong>
 
-<%= vars.product_short %> recognizes a Clojure app as as a Java app by the use of the java buildpack during the push and the use of a jar file as application package. Automatically the Java Buildpack will run this application using the `main()` method present on the `core.clj` file. 
+<%= vars.product_short %> uses the Java buildpack to execute the uploaded jar file as application package. The Java buildpack will run this application using the `main()` method present on the `core.clj` file.
 
-The dependencies needed for the application are stored on the `project.clj` file and are included in the standalone jar during the compilaton phase. When you create a new project with <a href="http://leiningen.org/" target="_blank">Leiningen</a>, the file `project.clj` is created automatically. To add new dependencies to the project, simply modifiy the file accordingly.
-The demo app you deployed already has a `project.clj`, and it looks something like this:
+The dependencies needed for the application are stored in the `project.clj` file and are included in the standalone jar during the compilaton phase. When you create a new project with <a href="http://leiningen.org/" target="_blank">Leiningen</a>, the file `project.clj` is created automatically. To add new dependencies to the project, simply modifiy the file accordingly. The demo app you deployed already has a `project.clj`, and it looks something like this:
 
 ```clojure
 (defproject cf-sample-app-clojure "0.1.0-SNAPSHOT"
@@ -21,20 +20,24 @@ The demo app you deployed already has a `project.clj`, and it looks something li
                  [ring/ring-defaults "0.1.5"]
                  [ring/ring-jetty-adapter "1.4.0"]
                  [hiccup "1.0.5"]]
-  
+
   ...
 
   :main cf-sample-app-clojure.core
   :aot [cf-sample-app-clojure.core])
 ```
 
-The `project.clj` file determines both the version of Clojure that will be used to run your application on <%= vars.product_short %>, as well as the dependencies that should be installed with your application. 
+The `project.clj` file determines both the version of Clojure that will be used to run your application on <%= vars.product_short %>, as well as the dependencies that should be installed with your application.
 
-To install the dependencies compile the project with:
+To install the dependencies, compile the project with:
 
 <pre class="terminal">
 $ lein uberjar
-</pre> 
+2016-04-05 09:41:09.060:INFO::main: Logging initialized @3611ms
+Compiling cf-sample-app-clojure.core
+Created /.../cf-sample-app-clojure/target/cf-sample-app-clojure-0.1.0-SNAPSHOT.jar
+Created /.../cf-sample-app-clojure/target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
+</pre>
 
 <div style="text-align:center;margin:3em;">
   <a href="./run-locally.html" class="btn btn-primary">I've installed the App dependencies locally</a>
