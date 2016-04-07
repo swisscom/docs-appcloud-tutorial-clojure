@@ -121,7 +121,7 @@ As you can see, we created the additional routes for the GET request `/todo` as 
 First we need to implement the general function to render the HTML page. We call this function `commonLayout` and we need to place the following code in our `core.clj`file:
 
 ```clojure
-(defn commonLayout [& content]
+(defn commonLayout [&amp; content]
  (html5
    [:head
     [:meta {:charset "utf-8"}]
@@ -140,7 +140,7 @@ The function accepts an argument that is the body of the HTML page. So we can us
 (defn getToDo []
   (getAllFromMongo))
 
-(defn toDoPage [ & [todo]]
+(defn toDoPage [&amp; [todo]]
   (when todo
     (saveToDo todo))
   (commonLayout
