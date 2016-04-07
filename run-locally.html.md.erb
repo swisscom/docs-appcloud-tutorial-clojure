@@ -5,7 +5,7 @@ owner: Ivan Baldinotti
 
 <strong><%= modified_date %></strong>
 
-Before running locally an app needs to be compiled. <a href="http://leiningen.org/" target="_blank">Leiningen</a> reads this `project.clj` file and compiles the jar file with the appropriate Clojure version together with the dependencies.
+Before running locally, our app needs to be compiled. <a href="http://leiningen.org/" target="_blank">Leiningen</a> reads the `project.clj` file and compiles the jar file with the appropriate Clojure version together with the dependencies.
 
 Run this command in your local directory to compile the application with the dependencies, preparing your system for running the app locally:
 
@@ -13,19 +13,11 @@ Run this command in your local directory to compile the application with the dep
 $ lein uberjar
 2016-04-05 09:41:09.060:INFO::main: Logging initialized @3611ms
 Compiling cf-sample-app-clojure.core
-Created /home/ivan/Documents/WORK/CLOJURE/cf-sample-app-clojure-advanced/target/cf-sample-app-clojure-0.1.0-SNAPSHOT.jar
-Created /home/ivan/Documents/WORK/CLOJURE/cf-sample-app-clojure-advanced/target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
+Created /.../cf-sample-app-clojure-advanced/target/cf-sample-app-clojure-0.1.0-SNAPSHOT.jar
+Created /.../cf-sample-app-clojure-advanced/target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
 </pre>
 
-Once the application is compiled with all dependencies, you will be ready to run your app locally.
-
-Now start your application locally using the `java -jar target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar` command:
-
-<pre class="terminal">
-$ java -jar target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
-</pre>
-
-The application can be started also with the command: 
+Once the application is compiled with all dependencies, you will be ready to run your app locally using the command
 
 <pre class="terminal">
 $ lein run
