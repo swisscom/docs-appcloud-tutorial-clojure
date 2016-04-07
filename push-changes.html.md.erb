@@ -26,7 +26,7 @@ Change the `body` property in the `src/cf_sample_app_clojure/core.clj` file to '
   (wrap-defaults app-routes site-defaults))
 
 (defn -main
-  [&amp; [port]]
+  [& [port]]
   (let [port (Integer. (or port (System/getenv "PORT") 3000))]
     (jetty/run-jetty #'app {:port  port
                             :join? false})))
