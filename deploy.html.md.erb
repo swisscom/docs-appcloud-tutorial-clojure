@@ -20,6 +20,7 @@ Created /.../cf-sample-app-clojure-advanced/target/cf-sample-app-clojure-0.1.0-S
 Push your app to the cloud by executing the following command and replacing the "my-random-hostname" with your own hostname. This will be part of the URL your app will be reached from and it has to be globally unique so be creative.
 
 The `-b java_buildpack` tells Cloud Foundry to use the Java buildpack for our app and the `-p target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar` tells Cloud Foundry where to find the compiled application to push to the Cloud.
+
 <pre class="terminal">
 $ cf push my-clojure-app -b java_buildpack -p target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar -n my-random-hostname
 Creating app my-clojure-app in org MyOrg / space MySpace as user@mydomain.com...
