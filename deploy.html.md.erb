@@ -7,6 +7,13 @@ owner: Ivan Baldinotti
 
 In this step you will deploy the app to <%= vars.product_full %>.
 
+First compile the application using the command:
+
+<pre class="terminal">
+lein uberjar
+</pre>
+
+This will compile the application creating a jar standalone file that can be pushed to Cloud Foundry.
 Push your app to the cloud by executing the following command and replacing the "my-clojure-app" with your own hostname. This will be part of the URL your app will be reached from and it has to be globally unique so be creative. 
 
 The `-b java_buildpack` tells Cloud Foundry to use the java buildpack for our app and the `-p target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar` tells Cloud Foundry where to find the compiled application to push to the Cloud.

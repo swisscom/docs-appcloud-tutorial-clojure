@@ -86,8 +86,8 @@ In the function `defroutes` you can add two additional routes, a route to displa
 ```clojure
 (defroutes app-routes
   (GET "/" [] "Welcome to the Swisscom Application Cloud!")
-  (GET "/todo" [] (toDoPageInput))
-  (POST "/todo" [todo] (toDoPageOutput todo))
+  (GET "/todo" [] (toDoPage))
+  (POST "/todo" [todo] (toDoPage todo))
   (route/resources "/")
   (route/not-found "Not Found"))
 ```
