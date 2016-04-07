@@ -92,7 +92,7 @@ In the function `defroutes` you can add two additional routes, a route to displa
   (route/not-found "Not Found"))
 ```
 
-Additionally, to be able to execute POST requests, we need to disable a security check: the anti forgery CSRF token. Normally this is not advisable and it is better to properly implement the CSRF token. To disable the CSRF token, replace the `app` definition on the `core.clj` file:
+Additionally, to be able to execute POST requests, we need to disable a security check: the anti forgery CSRF token. Normally this is not advisable, but we do it to simplify the tutorial application. To disable the CSRF token, replace the `app` definition on the `core.clj` file:
 
 ```clojure
 (def app
@@ -100,7 +100,7 @@ Additionally, to be able to execute POST requests, we need to disable a security
 ```
 
 <p class="note">
-<strong>Important</strong>: you just created a security-bug, please be aware of the threat. Therefore, check for example this <a href="https://github.com/edbond/CSRF" target="_blank">tutorial</a> on how to implement correctly a CSRF token for POST requests.
+<strong>Important</strong>: be aware that disabling the anti-forgery check makes your application potentially vulnerable to [CSRF attacks](https://en.wikipedia.org/wiki/Cross-site_request_forgery). Therefore you should not do this in real applications. Check for example this <a href="https://github.com/edbond/CSRF" target="_blank">tutorial</a> on how to implement correctly a CSRF token for POST requests.
 </p>
 
 As you can see, we created the additional routes for the GET request `/todo` as well as for the POST request. We also need to add additional functions to implement the GET and POST requests. We need to create the functions `toDoPageInput` and `toDoPageOutput`. We will also implement a more general function `commonLayout`. All these functions use the <a href="https://github.com/weavejester/hiccup" target="_blank">Hiccup</a> library for representing HTML in Clojure. It uses vectors to represent elements, and maps to represent an element's attributes. With hiccup its easy to dynamically create the HTML pages we need for our form and to display the list of tasks. To use hiccup, we need to add the `:use` keyword to the name space function of the file `core.clj` with the hiccup functions we want to use:
