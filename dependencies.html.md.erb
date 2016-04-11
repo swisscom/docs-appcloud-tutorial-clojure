@@ -7,7 +7,9 @@ owner: Ivan Baldinotti
 
 <%= vars.product_short %> uses the Java buildpack to execute the uploaded jar file as application package. The Java buildpack will run this application using the `main()` method present on the `core.clj` file.
 
-The dependencies needed for the application are stored in the `project.clj` file and are included in the standalone jar during the compilaton phase. When you create a new project with <a href="http://leiningen.org/" target="_blank">Leiningen</a>, the file `project.clj` is created automatically. To add new dependencies to the project, simply modifiy the file accordingly. The demo app you deployed already has a `project.clj`, and it looks something like this:
+The dependencies needed for the application are stored in the `project.clj` file and are included in the standalone jar during the compilaton phase. When you create a new project with <a href="http://leiningen.org/" target="_blank">Leiningen</a>, the file `project.clj` is created automatically. To add new dependencies to the project, simply modifiy the file accordingly.
+
+The demo app you deployed already has a `project.clj`, and it looks something like this:
 
 ```clojure
 (defproject cf-sample-app-clojure "0.1.0-SNAPSHOT"
