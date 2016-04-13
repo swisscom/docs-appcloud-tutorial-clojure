@@ -78,7 +78,7 @@ Now the `project.clj` file should look something like this:
   :ring {:handler cf-sample-app-clojure.core/app}
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
-                         [ring/ring-jetty-adapter "1.4.0"]
+                        [ring/ring-jetty-adapter "1.4.0"]
                         [ring/ring-mock "0.3.0"]]}}
   :main cf-sample-app-clojure.core
   :aot [cf-sample-app-clojure.core])
@@ -126,13 +126,12 @@ First we need to implement the general function to render the HTML page. We call
 
 ```clojure
 (defn commonLayout [& content]
- (html5
-   [:head
-    [:meta {:charset "utf-8"}]
-    [:title "ListOfTasks"]
-    (include-css "/css/style.css")
-    ]
-   [:body content]))
+  (html5
+    [:head
+      [:meta {:charset "utf-8"}]
+      [:title "ListOfTasks"]
+      (include-css "/css/style.css")]
+    [:body content]))
 ```
 
 The function accepts an argument that is the body of the HTML page. So we can use this function to display both the form and the list of tasks. To do this, we need to implement an additional function. This functions passes the body as argument to the `commonLayout` function. In addition, we need to define two additional functions that are needed to save and to get the tasks from the MongoDB. The functions `saveToDo`and `getToDo`.
@@ -152,10 +151,10 @@ The function accepts an argument that is the body of the HTML page. So we can us
     (ordered-list (getToDo))
     [:h2 "Enter a new ToDo"]
     [:form {:method "post" :action "/todo"}
-     [:input.text {:type "text" :name "todo"}]
-     [:br]
-     [:br]
-     [:input.action {:type "submit" :value "New"}]]))
+      [:input.text {:type "text" :name "todo"}]
+      [:br]
+      [:br]
+      [:input.action {:type "submit" :value "New"}]]))
 ```
 
 These two functions are simply calling two functions from another file `mongodb.clj`. In the file `core.clj` we need to update the require list importing all the functions from the file `mongodb.clj`. Here's the complete name space function for the `core.clj` file:
@@ -182,8 +181,8 @@ We need to save the task we get from the text input to the MongoDB. We can do th
 (ns cf-sample-app-clojure.mongodb
   (:require [monger.core :as mg]
             [monger.collection :as mc])
-  (:import [org.bson.types ObjectId]
-           [com.mongodb DB WriteConcern]))
+  (:import  [org.bson.types ObjectId]
+            [com.mongodb DB WriteConcern]))
 ```
 
 This snippet of code shows how to import the library `monger` that we will use to access the MongoDB. Now we can implement the function `saveToMongo` that accepts the task as argument. Add it to the bottom of `mongodb.clj`:
@@ -191,9 +190,9 @@ This snippet of code shows how to import the library `monger` that we will use t
 ```clojure
 (defn saveToMongo [document]
  (try
-  (let  [uri "mongodb://127.0.0.1:27017/monger-test"
-         {:keys [conn db]} (mg/connect-via-uri uri)
-         coll "todos"]
+  (let [uri "mongodb://127.0.0.1:27017/monger-test"
+        {:keys [conn db]} (mg/connect-via-uri uri)
+        coll "todos"]
     (println "Inserting document")
     (mc/insert-and-return db coll {:todo document})
     (println "Document inserted")
@@ -210,10 +209,10 @@ Then we need to implement the function `getAllFromMongo` that gets all the saved
 (defn getAllFromMongo []
   (try
     (let [uri "mongodb://127.0.0.1:27017/monger-test"
-         {:keys [conn db]} (mg/connect-via-uri uri)
-         coll "todos"
-         all-documents-in-map (mc/find-maps db coll)
-         documents (doall (map #(get % :todo) all-documents-in-map))]
+          {:keys [conn db]} (mg/connect-via-uri uri)
+          coll "todos"
+          all-documents-in-map (mc/find-maps db coll)
+          documents (doall (map #(get % :todo) all-documents-in-map))]
       (mg/disconnect conn)
       documents)
   (catch Exception e (println (str "caught exception: " (.getMessage e))))))
@@ -237,8 +236,8 @@ We can create the function `getCredentials` that returns a map containing the cr
 
 ```clojure
 (ns cf-sample-app-clojure.parse
-    (require [environ.core :refer [env]]
-             [cheshire.core :refer :all]))
+  (require [environ.core :refer [env]]
+           [cheshire.core :refer :all]))
 
 (defn getCredentials [service]
   (let [vcap_services (env :vcap-services)
@@ -256,8 +255,8 @@ Now include the `parse.clj` library we just created in the file `mongodb.clj`. T
   (:require [monger.core :as mg]
             [monger.collection :as mc]
             [cf-sample-app-clojure.parse :refer :all])
-  (:import [org.bson.types ObjectId]
-           [com.mongodb DB WriteConcern]))
+  (:import  [org.bson.types ObjectId]
+            [com.mongodb DB WriteConcern]))
 ```
 
 Now we need to modify the uri in both functions `saveToMongo` and `getAllFromMongo` using the credentials from Cloud Foundry. So change these two functions in `mongodb.clj` to
@@ -265,10 +264,10 @@ Now we need to modify the uri in both functions `saveToMongo` and `getAllFromMon
 ```clojure
 (defn saveToMongo [document]
  (try
-  (let  [credentials (getCredentials "mongodb")
-         uri (get credentials :uri "mongodb://127.0.0.1:27017/monger-test")
-         {:keys [conn db]} (mg/connect-via-uri uri)
-         coll "todos"]
+  (let [credentials (getCredentials "mongodb")
+        uri (get credentials :uri "mongodb://127.0.0.1:27017/monger-test")
+        {:keys [conn db]} (mg/connect-via-uri uri)
+        coll "todos"]
     (println "Inserting document")
     (mc/insert-and-return db coll {:todo document})
     (println "Document inserted")
@@ -279,11 +278,11 @@ Now we need to modify the uri in both functions `saveToMongo` and `getAllFromMon
 (defn getAllFromMongo []
   (try
     (let [credentials (getCredentials "mongodb")
-         uri (get credentials :uri "mongodb://127.0.0.1:27017/monger-test")
-         {:keys [conn db]} (mg/connect-via-uri uri)
-         coll "todos"
-         all-documents-in-map (mc/find-maps db coll)
-         documents (doall (map #(get % :todo) all-documents-in-map))]
+          uri (get credentials :uri "mongodb://127.0.0.1:27017/monger-test")
+          {:keys [conn db]} (mg/connect-via-uri uri)
+          coll "todos"
+          all-documents-in-map (mc/find-maps db coll)
+          documents (doall (map #(get % :todo) all-documents-in-map))]
       (mg/disconnect conn)
       documents)
     (catch Exception e (println (str "caught exception: " (.getMessage e))))))
