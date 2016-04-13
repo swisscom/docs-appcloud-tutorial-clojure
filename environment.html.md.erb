@@ -16,7 +16,7 @@ $ cf push my-clojure-app -b https://github.com/cloudfoundry/java-buildpack.git -
 Then set the `JBP_CONFIG_OPEN_JDK_JRE` environment variable accordingly:
 
 <pre class="terminal">
-$ cf set-env my-clojure-app JBP_CONFIG_OPEN_JDK_JRE '{jre: { version: 1.7.0_+ }}'
+$ cf set-env my-clojure-app JBP_CONFIG_OPEN_JDK_JRE '{ "jre": { "version": "1.7.0_+" } }'
 Setting env variable 'JBP_CONFIG_OPEN_JDK_JRE' to '{jre: { version: 1.7.0_+ }}' for app my-clojure-app in org MyOrg / space MySpace as user@smydomain.com...
 OK
 TIP: Use 'cf restage' to ensure your env variable changes take effect
