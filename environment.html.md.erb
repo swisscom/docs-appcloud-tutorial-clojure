@@ -10,8 +10,10 @@ owner: Ivan Baldinotti
 At runtime, environment variables are exposed to the application through its environment. You can use these for example to change the default version of Java to 7. Before doing this, the application needs to be pushed with a different version of the buildpack that contains the JRE version we want to use.
 
 <pre class="terminal">
-cf push my-clojure-app -b https://github.com/cloudfoundry/java-buildpack.git -p target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
+$ cf push my-clojure-app -b https://github.com/cloudfoundry/java-buildpack.git -p target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
 </pre>
+
+Then set the `JBP_CONFIG_OPEN_JDK_JRE` environment variable accordingly:
 
 <pre class="terminal">
 $ cf set-env my-clojure-app JBP_CONFIG_OPEN_JDK_JRE '{jre: { version: 1.7.0_+ }}'
