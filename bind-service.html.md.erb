@@ -128,9 +128,9 @@ First we need to implement the general function to render the HTML page. We call
 (defn commonLayout [& content]
   (html5
     [:head
-    [:meta {:charset "utf-8"}]
-    [:title "ListOfTasks"]
-    (include-css "/css/style.css")
+      [:meta {:charset "utf-8"}]
+      [:title "ListOfTasks"]
+      (include-css "/css/style.css")
     ]
     [:body content]))
 ```
