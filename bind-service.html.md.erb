@@ -122,7 +122,7 @@ As you can see, we created the additional routes for the GET request on `/todo` 
              [hiccup.element]))
 ```
 
-First we need to implement the general function to render the HTML page. We call this function `commonLayout` and we need to place the following code at the end of our `core.clj` file:
+First we need to implement the general function to render the HTML page. We call this function `commonLayout` and we need to place the following code in our `core.clj` file right before the `defroutes` block:
 
 ```clojure
 (defn commonLayout [& content]
@@ -134,7 +134,7 @@ First we need to implement the general function to render the HTML page. We call
     [:body content]))
 ```
 
-The function accepts an argument that is the body of the HTML page. So we can use this function to display both the form and the list of tasks. To do this, we need to implement an additional function. This functions passes the body as argument to the `commonLayout` function. In addition, we need to define two additional functions that are needed to save and to get the tasks from the MongoDB. The functions `saveToDo`and `getToDo`.
+The function accepts an argument that is the body of the HTML page. So we can use this function to display both the form and the list of tasks. To do this, we need to implement an additional function. This functions passes the body as argument to the `commonLayout` function. In addition, we need to define two additional functions that are needed to save and to get the tasks from the MongoDB. The functions `saveToDo`and `getToDo` Place the following code right between the `commonLayout` function and the `defroutes block`.
 
 ```clojure
 (defn saveToDo [todo]
