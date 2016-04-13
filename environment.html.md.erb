@@ -27,14 +27,10 @@ Then restage your app as suggested using
 <pre class="terminal">
 $ cf restage my-clojure-app
 Restaging app my-clojure-app in org MyOrg / space MySpace as user@mydomain.com...
+-----> Downloaded app package (13M)
+-----> Downloaded app buildpack cache (79M)
 Cloning into '/tmp/buildpacks/java-buildpack'...
------> Java Buildpack Version: 73f12f6 | https://github.com/cloudfoundry/java-buildpack.git#73f12f6
-       Expanding Open Jdk JRE to .java-buildpack/open_jdk_jre (1.0s)
------> Downloading Open JDK Like Memory Calculator 2.0.1_RELEASE from https://download.run.pivotal.io/memory-calculator/trusty/x86_64/memory-calculator-2.0.1_RELEASE.tar.gz (found in cache)
-
------> Downloaded app package (8.0K)
------> Downloaded app buildpack cache (2.3M)
--------> Buildpack version 1.5.9
+-----> Java Buildpack Version: bed4c61 | https://github.com/cloudfoundry/java-buildpack.git#bed4c61
 
 ...
 </pre>
