@@ -20,6 +20,9 @@ applications:
 
   services:
   - my-mongodb
+
+  env:
+    JBP_CONFIG_OPEN_JDK_JRE: { "jre": { "version": "1.7.0_+" } }
 ```
 
 The file tells Cloud Foundry that this is an application with the name `my-clojure-app` and the specifications made above. This means that from now on, you'll be able to push your App with the simple command:
