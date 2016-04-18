@@ -36,13 +36,19 @@ Change the return string for the root route in the `src/cf_sample_app_clojure/co
 Now test locally:
 
 <pre class="terminal">
-$ lein uberjar
 $ lein run
 </pre>
 
 Visiting your application at <a href="http://localhost:3000" target="_blank">http://localhost:3000</a>, you should see the message changed. **You are awesome!**
 
-Now deploy. All you need to do is `cf push` again:
+Now deploy. 
+First rebuild the jar file:
+
+<pre class="terminal">
+$ lein uberjar
+</pre>
+
+Then all you need to do is `cf push` again:
 
 <pre class="terminal">
 $ cf push my-clojure-app -b java_buildpack -p target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
