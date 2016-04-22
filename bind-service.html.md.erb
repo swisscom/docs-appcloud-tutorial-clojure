@@ -138,10 +138,10 @@ The function accepts an argument that is the body of the HTML page. So we can us
 
 ```clojure
 (defn saveToDo [todo]
-  (saveToMongo todo))
+  (saveToMongo todo "todos"))
 
 (defn getToDo []
-  (getAllFromMongo))
+  (getAllFromMongo "todos"))
 
 (defn toDoPage [& [todo]]
   (when todo
@@ -185,37 +185,42 @@ We need to save the task we get from the text input to the MongoDB. We can do th
             [com.mongodb DB WriteConcern]))
 ```
 
-This snippet of code shows how to import the library `monger` that we will use to access the MongoDB. Now we can implement the function `saveToMongo` that accepts the task as argument. Add it to the bottom of `mongodb.clj`:
+This snippet of code shows how to import the library `monger` that we will use to access the MongoDB. Now we implement the private function `connectToMongo` to connect to the MongoDB. Add it to the bottom of `mongodb.clj`:
 
 ```clojure
-(defn saveToMongo [document]
- (try
-  (let [uri "mongodb://127.0.0.1:27017/monger-test"
-        {:keys [conn db]} (mg/connect-via-uri uri)
-        coll "todos"]
-    (println "Inserting document")
-    (mc/insert-and-return db coll {:todo document})
-    (println "Document inserted")
-    (println "Closing database")
-    (mg/disconnect conn))
+(defn- connectToMongo []
+  (let [credentials (getCredentials "mongodb")
+        uri (get credentials :uri "mongodb://127.0.0.1:27017/monger-test")]
+    (mg/connect-via-uri uri)))
+```
+
+Now we can implement the function `saveToMongo` that accepts the task as argument as well as the name of the collection we want to create. Add it to the bottom of `mongodb.clj`:
+
+```clojure
+(defn saveToMongo [document coll]
+  (try 
+    (let [{:keys [conn db]} (connectToMongo)]
+      (println "Inserting document")
+      (mc/insert-and-return db coll {:todo document})
+      (println "Document inserted")
+      (println "Closing database")
+      (mg/disconnect conn))
   (catch Exception e (println (str "caught exception: " (.getMessage e))))))
 ```
 
-This function accepts the text document as an argument and inserts it into the local MongoDB database `monger-test`in the collection `todos`.
+This function accepts the text document as an argument and inserts it into the local MongoDB database `monger-test`. The collection name `todos` comes from the file `core.clj`.
 
 Then we need to implement the function `getAllFromMongo` that gets all the saved tasks on the mongo database. Add it to the bottom of `mongodb.clj`:
 
 ```clojure
-(defn getAllFromMongo []
-  (try
-    (let [uri "mongodb://127.0.0.1:27017/monger-test"
-          {:keys [conn db]} (mg/connect-via-uri uri)
-          coll "todos"
+(defn getAllFromMongo [coll]
+  (try 
+    (let [{:keys [conn db]} (connectToMongo)
           all-documents-in-map (mc/find-maps db coll)
           documents (doall (map #(get % :todo) all-documents-in-map))]
       (mg/disconnect conn)
       documents)
-  (catch Exception e (println (str "caught exception: " (.getMessage e))))))
+    (catch Exception e (println (str "caught exception: " (.getMessage e))))))
 ```
 
 This function gets all documents from the MongoDB as maps. Then it extracts all the `todo` documents, creating a simple sequence from the lazy sequence returned by the map function. The simple sequence containing all the todo tasks is passed to the `ordered-list` function of Hiccup that renders an HTML ordered list containing all the to-do tasks.
