@@ -185,7 +185,7 @@ We need to save the task we get from the text input to the MongoDB. We can do th
             [com.mongodb DB WriteConcern]))
 ```
 
-This snippet of code shows how to import the library `monger` that we will use to access the MongoDB. Now we împlement the private function `connectToMongo` to connect to the MongoDB:
+This snippet of code shows how to import the library `monger` that we will use to access the MongoDB. Now we implement the private function `connectToMongo` to connect to the MongoDB. Add it to the bottom of `mongodb.clj`:
 
 ```clojure
 (defn- connectToMongo []
