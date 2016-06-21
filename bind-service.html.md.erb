@@ -198,7 +198,7 @@ Now we can implement the function `saveToMongo` that accepts the task as argumen
 
 ```clojure
 (defn saveToMongo [document coll]
-  (try 
+  (try
     (let [{:keys [conn db]} (connectToMongo)]
       (println "Inserting document")
       (mc/insert-and-return db coll {:todo document})
@@ -214,7 +214,7 @@ Then we need to implement the function `getAllFromMongo` that gets all the saved
 
 ```clojure
 (defn getAllFromMongo [coll]
-  (try 
+  (try
     (let [{:keys [conn db]} (connectToMongo)
           all-documents-in-map (mc/find-maps db coll)
           documents (doall (map #(get % :todo) all-documents-in-map))]
@@ -232,7 +232,7 @@ $ lein uberjar
 $ lein run
 </pre>
 
-Open [http://localhost:3000/todo](http://localhost:3000/todo) with your web browser. You should see your app running locally.
+Open `/todo` in your web browser. You should see your app running locally.
 The application will create a database called "monger-test" on your local MongoDB installation and will add tasks to the "todos" collection.
 
 To do the same on Cloud Foundry, we need to correctly parse the `VCAP_SERVICES` environment variable and to do this we can create a new file `parse.clj` in `src/cf_sample_app_clj` where we can implement it.
