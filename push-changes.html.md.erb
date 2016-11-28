@@ -30,7 +30,6 @@ Change the return string for the root route in the `src/cf_sample_app_clojure/co
   (let [port (Integer. (or port (System/getenv "PORT") 3000))]
     (jetty/run-jetty #'app {:port  port
                             :join? false})))
-
 ```
 
 Now test locally:
@@ -41,7 +40,7 @@ $ lein run
 
 Visiting your application at <a href="http://localhost:3000" target="_blank">http://localhost:3000</a>, you should see the message changed. **You are awesome!**
 
-Now deploy. 
+Now deploy.
 First rebuild the jar file:
 
 <pre class="terminal">

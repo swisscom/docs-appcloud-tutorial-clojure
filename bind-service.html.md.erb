@@ -45,12 +45,12 @@ Restaging app my-clojure-app in MyOrg monitor / space MySpace as user@mydomain.c
 ...
 </pre>
 
-Now we want to consume our new MongoDB from within our application. In order to do that, we will create a simple to-do list and store the tasks in the MongoDB. We also want to display all tasks as an ordered list. We have to add the library <a href="http://clojuremongodb.info/" target="_blank">Monger</a> to the dependencies by adding this to the file `project.clj`:
+Now we want to consume our new MongoDB from within our application. In order to do that, we will create a simple to-do list and store the tasks in the MongoDB. We also want to display all tasks as an ordered list. We have to add the library <a href="http://clojuremongodb.info/" target="_blank">Monger</a> to the dependencies by adding it to the array of dependencies in the file `project.clj`:
 
 ```clojure
 [com.novemberain/monger "3.1.0"]
 ```
-In addition, we need to use two more libraries to be able to get and correctly parse the `VCAP_SERVICES` environment variable: the library <a href="https://github.com/weavejester/environ" target="_blank">Environ</a> to get the `VCAP_SERVICES` variable and the library <a href="https://github.com/dakrone/cheshire" target="_blank">Cheshire</a> to parse the JSON variable to a Clojure map.
+In addition, we need to use two more libraries to be able to get and correctly parse the `VCAP_SERVICES` environment variable: the library <a href="https://github.com/weavejester/environ" target="_blank">Environ</a> to get the `VCAP_SERVICES` variable and the library <a href="https://github.com/dakrone/cheshire" target="_blank">Cheshire</a> to parse the JSON variable to a Clojure map. Add these to the dependencies array as well:
 
 ```clojure
 [environ "1.1.0"]
@@ -86,13 +86,13 @@ In the function `defroutes` you can add two additional routes, a route to displa
 ```clojure
 (defroutes app-routes
   (GET "/" [] "Welcome to the Swisscom Application Cloud!")
-  (GET "/todo" [] (toDoPage))
-  (POST "/todo" [todo] (toDoPage todo))
+  (GET "/todos" [] (toDoPage))
+  (POST "/todos" [todo] (toDoPage todo))
   (route/resources "/")
   (route/not-found "Not Found"))
 ```
 
-Additionally, to be able to execute POST requests, we need to disable a security check: the anti forgery CSRF token. Normally this is not advisable, but we do it to simplify the tutorial application. To disable the CSRF token, replace the `app` definition in the `core.clj` file:
+Additionally, to be able to execute POST requests, we need to disable a security check: the anti forgery CSRF token. Normally this is not advisable, but we do it to simplify the tutorial application. To disable the CSRF token, replace the `app` definition in the `core.clj` file with the following:
 
 ```clojure
 (def app
@@ -103,7 +103,7 @@ Additionally, to be able to execute POST requests, we need to disable a security
 <strong>Important</strong>: Be aware that disabling the anti-forgery check makes your application potentially vulnerable to <a href="https://en.wikipedia.org/wiki/Cross-site_request_forgery" target="_blank">CSRF attacks</a>. Therefore you should not do this for production applications. Check out this <a href="https://github.com/edbond/CSRF" target="_blank">tutorial</a> on how to implement a CSRF token for POST requests correctly.
 </p>
 
-As you can see, we created the additional routes for the GET request on `/todo` as well as for the POST request. We also need to add additional functions to implement the GET and POST requests. We need to create the functions `toDoPageInput` and `toDoPageOutput`. We will also implement a more general function `commonLayout`. All these functions use the Hiccup library for representing HTML in Clojure. It uses vectors to represent elements, and maps to represent an element's attributes. With Hiccup it's easy to dynamically create the HTML pages we need for our form and to display the list of tasks. To use Hiccup, we need to add the `:use` keyword to the name space function of the file `core.clj` with the Hiccup functions we want to use:
+As you can see, we created the additional routes for the GET and the POST requests on `/todos`. Now, we need to add additional functions to implement those requests. We need to create the functions `toDoPageInput` and `toDoPageOutput`. We will also implement a more general function `commonLayout`. All these functions use the templating library Hiccup for representing HTML in Clojure. It uses vectors to represent elements, and maps to represent an element's attributes. With Hiccup it's easy to dynamically create the HTML pages we need for our form and to display the list of tasks. To use Hiccup, we need to add the `:use` keyword with the Hiccup functions we want to use to the name space function of the file `core.clj`:
 
 ```clojure
 (ns cf-sample-app-clojure.core
@@ -118,7 +118,7 @@ As you can see, we created the additional routes for the GET request on `/todo` 
              [hiccup.element]))
 ```
 
-First we need to implement the general function to render the HTML page. We call this function `commonLayout` and we need to place the following code in our `core.clj` file right before the `defroutes` block:
+Now, we need to implement the general function to render the HTML page. We call this function `commonLayout` and we need to place the following code in our `core.clj` file right before the `defroutes` block:
 
 ```clojure
 (defn commonLayout [& content]
@@ -130,30 +130,30 @@ First we need to implement the general function to render the HTML page. We call
     [:body content]))
 ```
 
-The function accepts an argument that is the body of the HTML page. So we can use this function to display both the form and the list of tasks. To do this, we need to implement an additional function. This functions passes the body as argument to the `commonLayout` function. In addition, we need to define two additional functions that are needed to save and to get the tasks from the MongoDB. The functions `saveToDo`and `getToDo` Place the following code right between the `commonLayout` function and the `defroutes block`.
+The function accepts an argument that is the body of the HTML page. So we can use this function to display both the form and the list of tasks. To do that, we need to implement an additional function. This functions passes the body as an argument to the `commonLayout` function. In addition, we need to define two additional functions that are needed to save and to get the tasks from the MongoDB. The functions `saveToDo`and `getToDo` Place the following code right between the `commonLayout` function and the `defroutes block`.
 
 ```clojure
-(defn saveToDo [todo]
-  (saveToMongo todo "todos"))
+(defn createToDo [todo]
+  (saveToDB todo "todos"))
 
-(defn getToDo []
-  (getAllFromMongo "todos"))
+(defn findToDos []
+  (getAllFromDB "todos"))
 
 (defn toDoPage [& [todo]]
   (when todo
-    (saveToDo todo))
+    (createToDo todo))
   (commonLayout
     [:h2 "Todo List"]
-    (ordered-list (getToDo))
+    (ordered-list (findToDos))
     [:h2 "Enter a new ToDo"]
-    [:form {:method "post" :action "/todo"}
+    [:form {:method "post" :action "/todos"}
       [:input.text {:type "text" :name "todo"}]
       [:br]
       [:br]
       [:input.action {:type "submit" :value "New"}]]))
 ```
 
-These two functions are simply calling two functions from another file `mongodb.clj`. In the file `core.clj` we need to update the require list importing all the functions from the file `mongodb.clj`. Here's the complete name space function for the `core.clj` file:
+These two functions are simply calling two functions from another file `mongodb.clj`, which we will create soon. In the file `core.clj` we need to update the require list importing all the functions from the file `mongodb.clj`. Here's the complete name space function for the `core.clj` file:
 
 ```clojure
 (ns cf-sample-app-clojure.core
@@ -171,7 +171,7 @@ These two functions are simply calling two functions from another file `mongodb.
 
 Now create a file called `mongodb.clj` in `src/cf_sample_app_clojure` which will contain the implementation to use the `monger` library and connect to our MongoDB.
 
-We need to save the task we get from the text input to the MongoDB. We can do this both locally and in the Cloud Foundry deployment. First, let's try it locally (requires MongoDB to be installed). To do so, we create the function name space in the `mongodb.clj` file:
+We need to save the todo we get from the text input to the MongoDB. We can do this both locally and in the Cloud Foundry deployment. First, let's try it locally (requires MongoDB to be installed). To do so, we create the function name space in the `mongodb.clj` file:
 
 ```clojure
 (ns cf-sample-app-clojure.mongodb
@@ -181,21 +181,21 @@ We need to save the task we get from the text input to the MongoDB. We can do th
             [com.mongodb DB WriteConcern]))
 ```
 
-This snippet of code shows how to import the library `monger` that we will use to access the MongoDB. Now we implement the private function `connectToMongo` to connect to the MongoDB. Add it to the bottom of `mongodb.clj`:
+This snippet of code shows how to import the library `monger` that we will use to access the MongoDB. Now we implement the private function `connectToDB` to connect to the MongoDB. Add it to the bottom of `mongodb.clj`:
 
 ```clojure
-(defn- connectToMongo []
+(defn- connectToDB []
   (let [credentials (getCredentials "mongodb")
         uri (get credentials :uri "mongodb://127.0.0.1:27017/monger-test")]
     (mg/connect-via-uri uri)))
 ```
 
-Now we can implement the function `saveToMongo` that accepts the task as argument as well as the name of the collection we want to create. Add it to the bottom of `mongodb.clj`:
+Next, we can implement the function `saveToDB` that accepts thet todo as argument as well as the name of the collection we want to create. Add it to the bottom of `mongodb.clj`:
 
 ```clojure
-(defn saveToMongo [document coll]
+(defn saveToDB [document coll]
   (try
-    (let [{:keys [conn db]} (connectToMongo)]
+    (let [{:keys [conn db]} (connectToDB)]
       (println "Inserting document")
       (mc/insert-and-return db coll {:todo document})
       (println "Document inserted")
@@ -206,12 +206,12 @@ Now we can implement the function `saveToMongo` that accepts the task as argumen
 
 This function accepts the text document as an argument and inserts it into the local MongoDB database `monger-test`. The collection name `todos` comes from the file `core.clj`.
 
-Then we need to implement the function `getAllFromMongo` that gets all the saved tasks on the mongo database. Add it to the bottom of `mongodb.clj`:
+Then we need to implement the function `getAllFromDB` that gets all the saved todos on the mongo database. Add it to the bottom of `mongodb.clj`:
 
 ```clojure
-(defn getAllFromMongo [coll]
+(defn getAllFromDB [coll]
   (try
-    (let [{:keys [conn db]} (connectToMongo)
+    (let [{:keys [conn db]} (connectToDB)
           all-documents-in-map (mc/find-maps db coll)
           documents (doall (map #(get % :todo) all-documents-in-map))]
       (mg/disconnect conn)
@@ -221,19 +221,9 @@ Then we need to implement the function `getAllFromMongo` that gets all the saved
 
 This function gets all documents from the MongoDB as maps. Then it extracts all the `todo` documents, creating a simple sequence from the lazy sequence returned by the map function. The simple sequence containing all the todo tasks is passed to the `ordered-list` function of Hiccup that renders an HTML ordered list containing all the to-do tasks.
 
-To run the application locally, you need to have MongoDB installed. First the application must be compiled and executed:
+To make the app run on Cloud Foundry, we need to correctly parse the `VCAP_SERVICES` environment variable. Go ahead and create a new file `parse.clj` in `src/cf_sample_app_clj`.
 
-<pre class="terminal">
-$ lein uberjar
-$ lein run
-</pre>
-
-Open `/todo` in your web browser. You should see your app running locally.
-The application will create a database called "monger-test" on your local MongoDB installation and will add tasks to the "todos" collection.
-
-To do the same on Cloud Foundry, we need to correctly parse the `VCAP_SERVICES` environment variable and to do this we can create a new file `parse.clj` in `src/cf_sample_app_clj` where we can implement it.
-
-We can create the function `getCredentials` that returns a map containing the credentials needed to connect to the MongoDB service. Add this code to `prase.clj`:
+Let's create the function `getCredentials` that returns a map containing the credentials needed to connect to the MongoDB service. Add this code to `prase.clj`:
 
 ```clojure
 (ns cf-sample-app-clojure.parse
@@ -260,45 +250,18 @@ Now include the `parse.clj` library we just created in the file `mongodb.clj`. T
             [com.mongodb DB WriteConcern]))
 ```
 
-Now we need to modify the uri in both functions `saveToMongo` and `getAllFromMongo` using the credentials from Cloud Foundry. So change these two functions in `mongodb.clj` to
-
-```clojure
-(defn saveToMongo [document]
- (try
-  (let [credentials (getCredentials "mongodb")
-        uri (get credentials :uri "mongodb://127.0.0.1:27017/monger-test")
-        {:keys [conn db]} (mg/connect-via-uri uri)
-        coll "todos"]
-    (println "Inserting document")
-    (mc/insert-and-return db coll {:todo document})
-    (println "Document inserted")
-    (println "Closing database")
-    (mg/disconnect conn))
-  (catch Exception e (println (str "caught exception: " (.getMessage e))))))
-
-(defn getAllFromMongo []
-  (try
-    (let [credentials (getCredentials "mongodb")
-          uri (get credentials :uri "mongodb://127.0.0.1:27017/monger-test")
-          {:keys [conn db]} (mg/connect-via-uri uri)
-          coll "todos"
-          all-documents-in-map (mc/find-maps db coll)
-          documents (doall (map #(get % :todo) all-documents-in-map))]
-      (mg/disconnect conn)
-      documents)
-    (catch Exception e (println (str "caught exception: " (.getMessage e))))))
-```
-
-With this latest code we can still experiment locally, since the uri defaults to the local one in case the Cloud Foundry credentials don't exist. This allows you to run your app locally as well as in the cloud without having to configure anything differently. So let's push it to the cloud after recompiling:
+With this latest code we can still experiment locally, since the URI defaults to the local one in case the Cloud Foundry credentials don't exist. This allows you to run your app locally as well as in the cloud without having to configure anything differently. So let's push it to the cloud after recompiling:
 
 <pre class="terminal">
 $ lein uberjar
 $ cf push my-clojure-app -b java_buildpack -p target/cf-sample-app-clojure-0.1.0-SNAPSHOT-standalone.jar
 </pre>
 
+Open `/todos` in your web browser and add your todos.
+
 You can access other services like Redis or MariaDB in a similar matter, simply by binding them to your app and accessing them through the environment variables.
 
-You can checkout the finished version of all these changes in the `advanced` branch of the sample app repository, at: https://github.com/swisscom/cf-sample-app-clojure/tree/advanced
+You can checkout the finished version of all these changes in the `final-result` branch of the sample app repository, at: https://github.com/swisscom/cf-sample-app-clojure/tree/final-result
 
 <div style="text-align:center;padding:3em;">
   <a href="./manifest.html" class="btn btn-primary">I've bound a service to my App</a>
