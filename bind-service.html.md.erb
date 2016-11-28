@@ -85,7 +85,7 @@ In the function `defroutes` you can add two additional routes, a route to displa
 
 ```clojure
 (defroutes app-routes
-  (GET "/" [] "Welcome to the Swisscom Application Cloud!")
+  (GET "/" [] "I am awesome!")
   (GET "/todos" [] (toDoPage))
   (POST "/todos" [todo] (toDoPage todo))
   (route/resources "/")
@@ -186,7 +186,7 @@ This snippet of code shows how to import the library `monger` that we will use t
 ```clojure
 (defn- connectToDB []
   (let [credentials (getCredentials "mongodb")
-        uri (get credentials :uri "mongodb://127.0.0.1:27017/monger-test")]
+        uri (get credentials :uri "mongodb://127.0.0.1:27017/test")]
     (mg/connect-via-uri uri)))
 ```
 
@@ -204,7 +204,7 @@ Next, we can implement the function `saveToDB` that accepts thet todo as argumen
   (catch Exception e (println (str "caught exception: " (.getMessage e))))))
 ```
 
-This function accepts the text document as an argument and inserts it into the local MongoDB database `monger-test`. The collection name `todos` comes from the file `core.clj`.
+This function accepts the text document as an argument and inserts it into the local MongoDB database `test`. The collection name `todos` comes from the file `core.clj`.
 
 Then we need to implement the function `getAllFromDB` that gets all the saved todos on the mongo database. Add it to the bottom of `mongodb.clj`:
 
